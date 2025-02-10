@@ -1,14 +1,9 @@
+# 중복o, 순서 ㅐ : 중복 순열
+from itertools import product, repeat
 
-a = [[1,2], [3,4]]
-b = [[5,6], [7,8]]
-c = [[9,10], [11,12]]
-d = [[13,14], [15,16]]
-res = [[0],[0]]
+n, m = map(int, input().split())
+iter = [i for i in range(1, n+1)]
 
-# res[0][0] = a
-# res[0][1] = b
-# res[1][0] = c
-# res[1][1] = d
-
-print(a+b+c+d)
-# print(res)
+for i in product(iter, repeat=m) :
+    # arr = i
+    print(' '.join(map(str, i)))
