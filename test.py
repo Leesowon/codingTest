@@ -1,9 +1,11 @@
-# 중복o, 순서 ㅐ : 중복 순열
-from itertools import product, repeat
+import sys
+input = sys.stdin.readline
 
-n, m = map(int, input().split())
-iter = [i for i in range(1, n+1)]
+n = int(input())
+people = [list(input().split()) for _ in range(n)]
 
-for i in product(iter, repeat=m) :
-    # arr = i
-    print(' '.join(map(str, i)))
+# people = sorted(people, key=lambda x : int(x[0]))
+people.sort(key=lambda x : int(x[0]))
+
+for age, name in people :
+    print(age, name)
