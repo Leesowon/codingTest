@@ -1,2 +1,4 @@
-if 1 :
-    print('hi')
+
+dot = [[1,2], [3,4]]
+del dot [dot.index([1,2])]
+print(dot)
