@@ -1,14 +1,8 @@
 
-n = int(input())
-m = int(input())
-arr = {}
 
-for i in range(m) :
-    a,b,c = map(int, input().split())
+def find(num) :
+    if parent[num] == num :
+        return num
+    return parent[num] = find(parent[num])
 
-    if a not in arr :
-        arr[a] = []
-
-    arr[a].append((b,c))
-
-print(arr)
+parent = [i for i in range(n+1)]
