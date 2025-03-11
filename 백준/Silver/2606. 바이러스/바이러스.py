@@ -42,6 +42,6 @@ def bfs(n) :
                 d.append(i)
                 cnt_bfs += 1
                 v_bfs[i] = 1
-
-dfs(1)
-print(cnt_dfs-1) # 첫번째 컴 빼기
+                
+bfs(1)
+print(cnt_bfs)
