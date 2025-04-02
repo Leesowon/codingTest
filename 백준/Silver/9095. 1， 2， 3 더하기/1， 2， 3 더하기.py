@@ -1,17 +1,28 @@
 import sys
 input = sys.stdin.readline
-from itertools import product, repeat
 
 tc = int(input())
 
 for _ in range(tc) :
-    ans = 1
     n = int(input())
+    
+    if n == 1 :
+        print(1)
+        continue
+    elif n == 2 : 
+        print(2)
+        continue
+    elif n == 3 :
+        print(4) 
+        continue
 
-    nums = [1,2,3]
+    dp = [0 for _ in range(n+1)]
+    
+    dp[1] = 1
+    dp[2] = 2 # 1+1, 2
+    dp[3] = 4
 
-    for i in range(1, n) : # 1을 n번 더하는거 이상은 없음
-        for res in product(nums, repeat=i) :
-            if sum(res) == n :
-                ans += 1
-    print(ans)
+    for i in range(4, n+1) :
+        dp[i] = dp[i-1] + dp[i-2] + dp[i-3]
+
+    print(dp[n])
