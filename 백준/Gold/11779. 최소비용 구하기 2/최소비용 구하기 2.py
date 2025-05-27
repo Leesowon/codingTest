@@ -1,48 +1,51 @@
 import sys, heapq
-
 input = sys.stdin.readline
 
-n = int(input())
-m = int(input())
-
+n = int(input()) # 도시
+m = int(input()) # 버스
 bus = [[] for _ in range(n+1)]
+
 for _ in range(m) :
     start, end, weight = map(int, input().split())
     bus[start].append([weight, end])
+s, e = map(int, input().split())
 
-a, b = map(int, input().split())
+# 출발 지점으로부터 도착했을 때의 최소 경로 저장
+distance = [1e9 for _ in range(n+1)]
+distance[s] = 0
 
+pre_node = [0 for _ in range(n+1)]
 h = []
-heapq.heappush(h, (0, a)) # 시작위치에서 시작위치로 가는 비용은 0
+# 시작 위치에서 출발 : 출발 위치에 대한 비용은 0
+heapq.heappush(h, (0, s))
 
-route = [1e9 for _ in range(n+1)] # 각 도시에 대해 갈 수 있는 비용 (최댓값으로 초기화)
-route[a] = 0
+while h:
+    w, node = heapq.heappop(h) # 현재 위치
 
-prev_node = [0 for _ in range(n+1)]
-
-while h :
-    dist, now_node = heapq.heappop(h) # 현재 위치까지의 비용, 현재 위치
-
-    if now_node == b :
+    if node == e :
         break
 
-    for i in range(len(bus[now_node])) :
-        next_node = bus[now_node][i][1]
-        weight = bus[now_node][i][0]
+    # 현재 위치에서 갈 수 있는 다음 위치들에 대해 업데이트 가능한지 -
+    for i in range(len(bus[node])) :
+        next_node = bus[node][i][1] # 다음 위치
+        new_weight = w + bus[node][i][0] # 현재 위치에서 다음 위치로 이동하는 비용
 
-        if route[now_node] + weight < route[next_node] :
-            route[next_node] = route[now_node] + weight
-            heapq.heappush(h, (dist+weight, next_node))
-            prev_node[next_node] = now_node
+        # 현재 위치에서 이동할 수 있는 거리 중 값이 더 작다면 갱신
+        if new_weight < distance[next_node] :
+            distance[next_node] = new_weight
+            heapq.heappush(h, (new_weight, next_node))
+            pre_node[next_node] = node
 
-path = [b]
-now = b
+# 거꾸로 확인하면서 이동 경로 찾기
+path = [e]
+now = e
 
-while now != a :
-    now = prev_node[now]
+while now != s :
+    now = pre_node[now]
     path.append(now)
 
-print(route[b])
 path.reverse()
+
+print(distance[e])
 print(len(path))
-print(' '.join(map(str, path)))
+print(" ".join(map(str, path)))
