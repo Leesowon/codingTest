@@ -1,7 +1,7 @@
 def solution(num_list, n):
-    answer = []
+    answer = [[] * (len(num_list)//n)]
     
-    for i in range(len(num_list)//n) :
-        answer.append(num_list[i*n : i*n+n])
+    for i in range(len(num_list)) :
+         answer[i//n].append(num_list[i])
     
     return answer
