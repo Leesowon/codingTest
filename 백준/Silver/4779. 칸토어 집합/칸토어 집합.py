@@ -1,20 +1,19 @@
 import sys
 input = sys.stdin.readline
 
-def cut(a, n) : # a: 시작점
+def cut(n) : # a: 시작점
     if n == 1 :
-        return
+        return '-'
 
-    for i in range(a + (n//3), a + (n//3)*2) :
-        result[i] = ' '
-    cut(a, n//3) # 왼쪽 잘라내기
-    cut(a + n//3*2, n//3) # 오른쪽 잘라내기
+    left = cut(n//3)
+    center = ' ' * (n//3)
+    return left + center + left
 
 while True :
     try :
         n = int(input())
-        result = ['-'] * (3**n)
-        cut(0, 3**n)
-        print(''.join(result))
+        result = cut(3**n)
+        print(result)
+        
     except :
         break
