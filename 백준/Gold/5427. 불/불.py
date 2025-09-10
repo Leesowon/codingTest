@@ -79,8 +79,8 @@ for _ in range(tc) :
 
             # 현재 날짜에 불이 번져있으면 못감 & 불이 붙으려는 칸으로도 못감
             if fire_day[nh][nw] > day+1 :
-                visited[nh][nw] = True
                 pd.append((nh, nw, day+1))
+                visited[nh][nw] = True
 
     if not is_escaped :
         print("IMPOSSIBLE")
