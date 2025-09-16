@@ -1,33 +1,37 @@
-from itertools import product
-
 def solution(users, emoticons):
-    answer = []
+    discounts = [10, 20, 30, 40]
+    m = len(emoticons)
     
-    discount = [10, 20, 30, 40] 
+    best_join, best_sales = -1, -1
+    rates = [0] * m # 각 이모티콘의 할인률을 담을 배열
     
-    # 각 이모티콘 할인률 조합 : dis_rate
-    for dis_rate in product(discount, repeat = len(emoticons)) :
+    def dfs(i) :
+        nonlocal best_join, best_sales
         
-        buy, plus = 0, 0
-        
-        for rate, price in users :
+        if i == m :
+            # 현재 rates 조합으로 가입/매출 계산
+            join, sales = 0, 0
             
-            # 할인률을 적용한 모든 이모티콘 금액 합
-            total_emoticons_price = 0
+            for u_rate, u_price in users :
+                total = 0
+                
+                for k in range(m) :
+                    if rates[k] >= u_rate :
+                        total += emoticons[k] * (100 - rates[k]) // 100
+                        
+                if total >= u_price :
+                    join += 1
+                else :
+                    sales += total
             
-            for i in range(len(emoticons)) :
-                # 유저의 할인률보다 더 할인한다면, 구매
-                if dis_rate[i] >= rate :
-                    total_emoticons_price += int((emoticons[i] * ((100-dis_rate[i])*0.01)))
-                    
-            # 플러스 가입
-            if price <= total_emoticons_price :
-                plus += 1
-            else :
-                buy += total_emoticons_price
+            if join > best_join or (join == best_join and sales > best_sales) :
+                best_join, best_sales = join, sales
+            return
         
-        answer.append([plus, buy])
+        # i번째 이모티콘의 할인률 선택
+        for d in discounts :
+            rates[i] = d
+            dfs(i+1)
     
-    answer.sort(key=lambda x : (x[0], x[1]), reverse=True)
-    
-    return answer[0]
+    dfs(0)
+    return [best_join, best_sales]
