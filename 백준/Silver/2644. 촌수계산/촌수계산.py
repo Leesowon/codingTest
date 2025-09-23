@@ -1,41 +1,35 @@
 import sys
 input = sys.stdin.readline
-from collections import deque
 
 n = int(input()) # 사람 수
 s,e = map(int, input().split())
 m = int(input()) # 관계
-relation = []
+g = [[] for _ in range(n+1)]
+visited = [False] * (n+1)
+
+result = []
+
+# 어떤 노드들이 연결되었는지 g배열에 2차원으로 저장
 for _ in range(m) :
-    relation.append(list(map(int, input().split())))
+    x, y = map(int, input().split())
+    g[x].append(y)
+    g[y].append(x)
 
-# dfs
-v = [False] * (m+1) # 관계 수만큼
-q = deque()
+def dfs(v, num) : # v : 사람 번호, num : 촌 수
+    if v == e :
+        result.append(num)
 
-INF = 10**9
-ans = INF
+    num += 1
+    visited[v] = True
 
-for i in range(m) :
-    for j in range(2) :
-        if relation[i][j] == s:
-            q.append((i, abs(j-1), 1)) # 부모 관계
-            v[i] = True
+    for i in g[v] :
+        if not visited[i] :
+            dfs(i, num)
 
-            while q :
-                cur_i, cur_j, rel = q.popleft()
+dfs(s, 0)
 
-                if relation[cur_i][cur_j] == e :
-                    ans = min(ans, rel)
-                    break
-
-                for k in range(m) :
-                    for l in range(2):
-                        if relation[k][l] == relation[cur_i][cur_j] and not v[k] :
-                            q.append((k, abs(l - 1), rel+1))
-                            v[k] = True
-
-if ans == INF :
+if len(result) == 0 :
     print(-1)
 else :
-    print(ans)
+    print(min(result))
+
