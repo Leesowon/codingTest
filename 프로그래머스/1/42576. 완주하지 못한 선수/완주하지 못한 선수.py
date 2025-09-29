@@ -1,16 +1,20 @@
 def solution(participant, completion):
     answer = ''
-    d_part = {}
+    
+    dic = {}
+    
     for p in participant :
-        if p in d_part :
-            d_part[p] += 1
+        if p in dic :
+            dic[p] += 1
         else :
-            d_part[p] = 1
+            dic[p] = 1
     
-    for c in completion : 
-        d_part[c] -= 1
+    for c in completion :
+        if c in dic :
+            dic[c] -= 1
     
-    for d in d_part : 
-        if d_part[d] == 1 :
-            answer = d
+    for key, value in dic.items() :
+        if value == 1 :
+            answer = key
+    
     return answer
