@@ -1,20 +1,13 @@
+import collections
+
 def solution(participant, completion):
     answer = ''
     
-    dic = {}
+    # print(collections.Counter(participant))
+    # print(collections.Counter(completion))
     
-    for p in participant :
-        if p in dic :
-            dic[p] += 1
-        else :
-            dic[p] = 1
+    # print(collections.Counter(participant) - collections.Counter(completion))
     
-    for c in completion :
-        if c in dic :
-            dic[c] -= 1
+    answer = list(collections.Counter(participant) - collections.Counter(completion))
     
-    for key, value in dic.items() :
-        if value == 1 :
-            answer = key
-    
-    return answer
+    return answer[0]
