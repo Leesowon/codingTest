@@ -1,34 +1,44 @@
 def solution(genres, plays):
     answer = []
     
-    # 1. [장르, 재생수, 고유번호] 형태의 리스트를 생성
-    tmp = [[genres[i], plays[i], i] for i in range(len(genres))]
-    
-    # 2. 장르별로 정렬 -> 같은 장르끼리 모으고,
-    #   재생수는 내림차순
-    #   고유 번호는 오름차순 정렬
-    tmp = sorted(tmp, key = lambda x : (x[0], -x[1], x[2]))
-    
-    # 3. 장르별 총 재생 횟수 딕셔너리를 생성
-    total_genre_d = {}
-    for g in tmp :
-        if g[0] not in total_genre_d :
-            total_genre_d[g[0]] = g[1]
+    # 각 장르별 총 재생횟수 저장
+    count = {}
+    for i in range(len(genres)) :
+        if genres[i] in count :
+            count[genres[i]] += plays[i]
         else :
-            total_genre_d[g[0]] += g[1]
-            
-    # 4. 장르를 총 재생 횟수 기준으로 정렬(내림차순)
-    total_genre_d = sorted(total_genre_d.items(), key = lambda x : -x[1])
+            count[genres[i]] = plays[i]
+    # print(f"장르별 재생 횟수 : {count}")
     
-    # 4. 각 장르별로 상위 2곡까지만 정답에 추가
-    for i in total_genre_d : 
-        cnt = 0
-        for j in tmp :
-            if i[0] == j[0] : # 장르가 같다면
-                cnt += 1
-                if cnt > 2 : 
-                    break
-                else :
-                    answer.append(j[2]) # 고유 번호 추가
-                    
+    # 많이 재생된 장르 정렬
+    s_count = sorted(count.items(), key=lambda x : x[1], reverse = True)
+    
+    # print(f"s_count : {s_count}")
+    
+    albem = {}
+    
+    for i in range(len(genres)) :
+        if genres[i] in albem :
+            albem[genres[i]].append([plays[i], i])
+        else :
+            albem[genres[i]] = [[plays[i], i]]
+    # print(albem)
+    
+    # 많이 재생된 장르별로 정렬
+    for ge, pl in albem.items() :
+        s_pl = sorted(pl, key=lambda x : (-x[0], x[1]))
+        albem[ge] = s_pl
+    
+    # print(f"정렬 후 : {al}")
+    
+    # 각 장르별 재생횟수 큰 순서, idx 작은 순서로 정렬
+    # 장르에 노래가 한 곡이라면 한 곡만 수록
+    
+    for genre, cnt in s_count :
+        if len(albem[genre]) > 1 :
+            for i in range(2) : # 장르별 2곡씩
+                answer.append(albem[genre][i][1])
+        else :
+            answer.append(albem[genre][0][1])
+    
     return answer
