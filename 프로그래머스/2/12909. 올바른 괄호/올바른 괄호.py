@@ -1,17 +1,25 @@
+from collections import deque
+
 def solution(s):
     answer = True
-    stack = []
     
-    for g in s :
-        if g == "(" :
-            stack.append("(")
-        else : 
-            if len(stack)>0 and stack[-1] == "(" :
+    stack = deque()
+    
+    for i in range(len(s)) :
+        
+        if len(stack) == 0 :
+            stack.append(s[i])
+            continue
+        
+        if stack[-1] == '(' :
+            if s[i] == ')' :
                 stack.pop()
             else :
-                stack.append(g)
-                
+                stack.append(s[i])
+        else :
+            stack.append(s[i])
+        
     if len(stack) > 0 :
-        answer = False
-    
-    return answer
+        return False
+
+    return True
