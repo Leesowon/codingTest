@@ -23,6 +23,7 @@ def solution(operations):
                     continue
                 val = hq.heappop(min_h)
                 max_h.remove(-val)
+                hq.heapify(max_h)
             
             # 최댓값 삭제
             else : 
@@ -30,6 +31,7 @@ def solution(operations):
                     continue
                 val = hq.heappop(max_h)
                 min_h.remove(-val)
+                hq.heapify(min_h)
         
     if len(min_h) > 0 :
         answer[1] = hq.heappop(min_h)
