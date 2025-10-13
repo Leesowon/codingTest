@@ -1,5 +1,7 @@
-SELECT HOUR(DATETIME) AS hour, count(*) as count 
-from animal_outs
-group by hour
-having hour > 8 and hour < 20
-order by hour;
+-- 몇시에 입양이 가장 활발하게 일어나는지
+
+SELECT HOUR(DATETIME) AS HOUR, COUNT(HOUR(DATETIME)) AS COUNT
+FROM ANIMAL_OUTS
+WHERE HOUR(DATETIME) BETWEEN 9 AND 19
+GROUP BY HOUR(DATETIME)
+ORDER BY HOUR
