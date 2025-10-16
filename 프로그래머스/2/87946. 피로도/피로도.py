@@ -1,15 +1,23 @@
-from itertools import permutations
+answer = 0
+n = 0
+v = []
+
+def dfs(k, cnt, dungeons) :
+    global answer
+    answer = max(cnt, answer)
+    
+    for i in range(n) : 
+        if k >= dungeons[i][0] and not v[i] :
+            v[i] = 1
+            dfs(k-dungeons[i][1], cnt+1, dungeons)
+            v[i] = 0
 
 def solution(k, dungeons):
-    answer = -1
+    global n, v
     
-    for order in permutations(dungeons, len(dungeons)) :
-        labor = k # 노동..
-        ans = 0
-        for need, use in order :
-            if labor < need :
-                break
-            labor -= use
-            ans += 1
-        answer = max(answer, ans)
+    n = len(dungeons)
+    v = [0] * n
+    
+    dfs(k, 0, dungeons)
+    
     return answer
