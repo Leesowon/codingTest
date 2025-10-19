@@ -1,26 +1,17 @@
-import itertools
+from itertools import product
 
 def solution(word):
     answer = 0
     
-    vowel = ['A', 'E', 'I', 'O', 'U']
-    words = []
-    for i in range(1,6):
-        for alp in itertools.combinations(vowel, i):
-            alp_li = list(alp)
-            
-            for w in itertools.product(alp_li, repeat =i) :
-                w = ''.join(map(str, w))
-                if w in words :
-                    continue
-                words.append(w)
-                    
-    words = sorted(words)
+    w = ['A', 'E', 'I', 'O', 'U']
+    dictionary = []
     
-    for idx in range(len(words)):
-        if words[idx] == word :
-            answer = idx + 1
-            break
-            
+    for i in range(1, 6) :
+        for r in product(w, repeat = i) :
+            dictionary.append(''.join(r))
+    
+    dictionary.sort()
+    
+    answer = dictionary.index(word)+1
     
     return answer
