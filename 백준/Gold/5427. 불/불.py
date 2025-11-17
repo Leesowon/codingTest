@@ -1,86 +1,76 @@
 import sys
 input = sys.stdin.readline
-
 from collections import deque
-
-tc = int(input())
 
 dh = [-1, 1, 0, 0]
 dw = [0, 0, -1, 1]
 
 INF = 10**9
 
-# 입력
+tc = int(input())
+
 for _ in range(tc) :
-    W, H = map(int, input().split())
+    w, h = map(int, input().split())
 
-    fd = deque()  # fire
-    pd = deque()  # person
+    d = deque()
+    d_fire = deque()
 
-    # 입력받으면서 불 위치와 사람 위치 입력 받기
-    building = []
-    fire_day = [[INF] * W for _ in range(H)]
+    v = [[False] * w for _ in range(h)]
+    fire_day = [[INF] * w for _ in range(h)]
 
-    # 탈출하는 최단루트를 구해야하기 때문에 -> 방문 체크
-    visited = [[False] * W for _ in range(H)]
-
-    for r in range(H) :
+    # 입력 받으면서 상근이의 위치와 day 0의 불의 위치 저장
+    g = []
+    for i in range(h) :
         floor = list(input().strip())
-        building.append(floor)
+        g.append(floor)
 
-        for c in range(W) :
-            if floor[c] == '*' :
-                fd.append((r, c, 0))
-                fire_day[r][c] = 0
-                # print(f"시작 불 : {r}, {c}")
+        for j in range(w) :
+            if floor[j] == '@' :
+                v[i][j] = True
+                d.append((i, j, 0))
 
-            if floor[c] == '@' :
-                pd.append((r, c, 0))
-                visited[r][c] = True
+            if floor[j] == '*' :
+                d_fire.append((i, j, 0))
+                fire_day[i][j] = 0
 
-    # 불이 번지는 날짜 dfs
-    while fd :
-        h, w, day = fd.popleft()
-        # print(f"h : {h}, w : {w}, day : {day}")
+    while d_fire :
+        r, c, day = d_fire.popleft()
 
-        for k in range(4) :
-            nh = h + dh[k]
-            nw = w + dw[k]
-
-            # 빈 벽인 경우가 아니라 벽이 아니고, 현재 불 번진 날짜 day+1 일 때를 고려해야 함 -> 더 이전에 불이 번질 수 있기 때문
-            if 0 <= nh < H and 0 <= nw < W and building[nh][nw] != '#':
-                # building[nh][nw] = '*'
-                # 아직 INF이거나, 더 현재의 day보다 큰 경우
-                if fire_day[nh][nw] > day+1 :
-                    fire_day[nh][nw] = day+1
-                    fd.append((nh, nw, day+1))
-
-    # 상근이의 이동 루트
-    is_escaped = False
-
-    while pd and not is_escaped:
-        h, w, day = pd.popleft()
+        day += 1
 
         for k in range(4) :
-            nh = h + dh[k]
-            nw = w + dw[k]
+            nr = r + dh[k]
+            nc = c + dw[k]
 
-            # 밖으로 벗어나면
-            if nh < 0 or nh >= H or nw < 0 or nw >= W :
-                print(day+1)
-                is_escaped = True
+            if 0 <= nr < h and 0 <= nc < w and g[nr][nc] != '#' :
+                if fire_day[nr][nc] > day :
+                    fire_day[nr][nc] = day
+                    d_fire.append((nr, nc, day))
+
+    ck = True
+    while d and ck :
+        r, c, day = d.popleft()
+
+        day += 1
+
+        for k in range(4) :
+            nr = r + dh[k]
+            nc = c + dw[k]
+
+            if nr < 0 or nr >= h or nc < 0 or nc >= w:
+                print(day)
+                ck = False
                 break
 
-            if visited[nh][nw] :
+            if v[nr][nc]:
                 continue
 
-            if building[nh][nw] == '#' :
+            if g[nr][nc] == '#' :
                 continue
 
-            # 현재 날짜에 불이 번져있으면 못감 & 불이 붙으려는 칸으로도 못감
-            if fire_day[nh][nw] > day+1 :
-                pd.append((nh, nw, day+1))
-                visited[nh][nw] = True
+            if fire_day[nr][nc] > day :
+                v[nr][nc] = True
+                d.append((nr, nc, day))
 
-    if not is_escaped :
+    if ck :
         print("IMPOSSIBLE")
