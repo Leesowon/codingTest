@@ -1,51 +1,53 @@
-import sys, heapq
+import sys
 input = sys.stdin.readline
+import heapq as hq
 
-n = int(input()) # 도시
-m = int(input()) # 버스
-bus = [[] for _ in range(n+1)]
+n = int(input()) # 도시의 수 (노드)
+m = int(input()) # 버스의 수
+
+h = []
+g = [[] for _ in range(n+1)]
+
+pre = [0 for _ in range(n+1)]
+
+INF = 1e9
+distance = [INF] * (n+1)
 
 for _ in range(m) :
-    start, end, weight = map(int, input().split())
-    bus[start].append([weight, end])
-s, e = map(int, input().split())
+    u, v, w = map(int, input().split()) # 출발, 도착, 비용
+    g[u].append([v, w]) # 도착, 비용
 
-# 출발 지점으로부터 도착했을 때의 최소 경로 저장
-distance = [1e9 for _ in range(n+1)]
-distance[s] = 0
+start, end = map(int, input().split())
+distance[start] = 0
+hq.heappush(h, (0, start))
 
-pre_node = [0 for _ in range(n+1)]
-h = []
-# 시작 위치에서 출발 : 출발 위치에 대한 비용은 0
-heapq.heappush(h, (0, s))
+while h :
+    weight, cur = hq.heappop(h)
 
-while h:
-    w, node = heapq.heappop(h) # 현재 위치
-
-    if node == e :
+    if cur == end :
         break
 
-    # 현재 위치에서 갈 수 있는 다음 위치들에 대해 업데이트 가능한지 -
-    for i in range(len(bus[node])) :
-        next_node = bus[node][i][1] # 다음 위치
-        new_weight = w + bus[node][i][0] # 현재 위치에서 다음 위치로 이동하는 비용
+    for next_start, next_cost in g[cur] :
 
-        # 현재 위치에서 이동할 수 있는 거리 중 값이 더 작다면 갱신
-        if new_weight < distance[next_node] :
-            distance[next_node] = new_weight
-            heapq.heappush(h, (new_weight, next_node))
-            pre_node[next_node] = node
+        if distance[next_start] > distance[cur] + next_cost :
+            distance[next_start] = distance[cur] + next_cost
 
-# 거꾸로 확인하면서 이동 경로 찾기
-path = [e]
-now = e
+            pre[next_start] = cur
 
-while now != s :
-    now = pre_node[now]
-    path.append(now)
+            hq.heappush(h, (distance[cur] + next_cost, next_start))
+
+path = [end]
+p = end
+
+while True :
+    if p == start :
+        break
+
+    path.append(pre[p])
+    p = pre[p]
 
 path.reverse()
 
-print(distance[e])
+print(distance[end]) # 최소 비용
 print(len(path))
-print(" ".join(map(str, path)))
+print(' '.join(map(str, path)))
