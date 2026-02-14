@@ -2,36 +2,30 @@ import sys
 input = sys.stdin.readline
 
 n = int(input())
-A = sorted(list(map(int, input().split())))
-
+A = sorted(list(map(int, input().split()))) # O(n log n)
 m = int(input())
-B = list(map(int, input().split()))
+arr = list(map(int, input().split()))
 
-def two_point() :
-    global A, B
+start = 0
+end = n-1
 
-    for num in B :
+def findRes(A, value, start, end) :
 
-        # print(f"num : {num}")
-        start = 0
-        end = len(A)-1
-        mid = (start + end) // 2
+    if start > end :
+        print(0)
+        return
 
-        while True :
-            # print(f"mid : {mid}, start : {start}, end : {end}")
-            mid = (start + end) // 2
+    mid = (start + end) // 2
 
-            if mid < start or mid > end :
-                print(0)
-                break
+    if A[mid] == value :
+        print(1)
 
+    elif A[mid] > value :
+        findRes(A, value, start, mid-1)
 
-            if num < A[mid] :
-                end = mid-1
-            if num > A[mid] :
-                start = mid+1
-            if num == A[mid] :
-                print(1)
-                break
+    elif A[mid] < value :
+        findRes(A, value, mid+1, end)
 
-two_point()
+for i in range(m) :
+    findRes(A, arr[i], start, end)
+
