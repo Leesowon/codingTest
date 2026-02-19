@@ -15,10 +15,7 @@ for num in range(1, n+1) :
     stack.append(num)
     ans.append('+')
 
-    # if len(stack) < 1:
-    #     continue
-
-    while len(stack) > 0 and nums[0] <= stack[-1] :
+    while len(stack) > 0 and nums[0] == stack[-1] :
         del nums[0]
         stack.pop()
         ans.append('-')
