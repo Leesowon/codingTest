@@ -3,40 +3,39 @@ input = sys.stdin.readline
 from collections import deque
 
 n, m, v = map(int, input().split())
-# 정점의 개수만큼 행렬 생성
-g = [[0] * (n+1) for _ in range(n+1)]
-# 정점 간의 연결을 행렬에 표시
-for i in range(m) :
-    a,b = map(int, input().split())
-    g[a][b] = g[b][a] = 1
 
-# 방문 여부 확인
-v1 = [0] * (n+1)
-v2 = v1.copy()
+g = [[0] * (n+1) for _ in range(n + 1)]  # 노드는 1~n번까지
 
-# 깊이 우선 탐색
-def dfs(v) : # 깊이 우선 탐색
-    v1[v] = 1 # 방문 처리
-    print(v, end = ' ')
+# 정점 간의 연결 표시
+for _ in range(m):
+    n1, n2 = map(int, input().split())
+    g[n1][n2] = g[n2][n1] = 1
+
+v_bfs = [0] * (n+1)
+v_dfs = v_bfs.copy()
+
+def dfs(v) :
+    v_bfs[v] = 1
+    print(v, end=' ')
 
     for i in range(1, n+1) :
-        if g[v][i] == 1 and v1[i] == 0 : # 아직 방문 x, 그래프 상 연결
-            dfs(i) # 재귀 탐색
+        if g[v][i] == 1 and v_bfs[i] == 0 :
+            dfs(i)
 
-# 넓이 우선 탐색
 def bfs(v) :
-    q = deque()
-    q.append(v)
-    v2[v] = 1
+    d = deque()
 
-    while q :
-        v = q.popleft()
-        print(v, end = ' ')
+    d.append(v)
+    v_dfs[v] = 1
+
+    while d :
+        node = d.popleft()
+        print(node, end=' ')
 
         for j in range(1, n+1) :
-            if v2[j] == 0 and g[v][j] == 1:
-                q.append(j)
-                v2[j] = 1
+            if v_dfs[j] == 0 and g[node][j] == 1 :
+                d.append(j)
+                v_dfs[j] = 1
 
 dfs(v)
 print()
